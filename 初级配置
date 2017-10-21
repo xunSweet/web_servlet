@@ -1,0 +1,73 @@
+关于web.xml配置中的<url-pattern>
+
+标签<url-pattern>
+
+<url-pattern>是我们用Servlet做Web项目时需要经常配置的标签，例：
+
+<servlet>
+<servlet-name>index</servlet-name>
+<servlet-class>com.we.servlet.IndexServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>index</servlet-name>
+<url-pattern>/index</url-pattern>
+</servlet-mapping>
+
+当我们在浏览器的地址栏里输入http://localhost:8080/we/index时[假设我部署在webapps目录下的项目名为we]
+
+就会匹配到我们指定的<url-pattern>中，即/index然后一步一步找到对应的<servlet-class>
+
+那我们输入的URL：http://localhost:8080/we/index又是如何与<url-pattern>中的/index匹配的呢？
+
+首先我们要知道URL的组成
+
+http://localhost:8080    我们可以理解为是我们的服务器地址，而该地址之后的部分我们统称为：RequestURI
+
+RequestURI是我们需要重点注意的部分，其又可以分解为几部分
+
+/we  是我们的ServletConext的上下文地址，我们称为ServletContext Path，可以简单理解为部署项目时的webapps目录下的项目名
+
+/index  是我们的Servlet的地址，我们称为Servlet Path，这里就是需要与我们的<url-pattern>匹配的内容
+
+注：在/index后边我们还可以跟其他的信息，例如：/index?name=admin&pass=admin  这是其中一种明文表示的方式
+
+ 
+
+标签<url-pattern>中*的使用
+
+我们知道在写<url-pattern>时有一种通配符的使用写法，即*
+
+1.当我使用<url-pattern>/*</url-pattern>时，我们可以匹配所有的请求，即所有的请求都会经过该标签对应的Servlet
+
+此时就需要注意静态资源的请求，因为当我们使用http://localhost:8080/we/login.html时，依然会匹配该Servlet，
+
+而很多静态资源其实是不需要经过Servlet的，例如：js，css，html，jsp，img等静态资源文件，此时就需要在该Servlet中对静态资源做特殊处理
+
+2.如果配有如下两个<url-pattern>标签时，URL地址为http://localhost:8080/we/index时又是如何匹配的呢？
+
+<url-pattern>/index</url-pattern>
+
+<url-pattern>/*</url-pattern>
+
+上边我们已经说过，/*可以匹配所有的请求，而/index也可以匹配我们的URL地址，此时URL地址会自动且优先的进行精确匹配，即/index，
+
+且只匹配一次，也就是说一旦匹配到一个Servlet即执行该Servlet不再对其他Servlet进行匹配，
+
+当我们输入一个http://localhost:8080/we/login时，由于此时匹配不到/login所以只能匹配/*了
+
+3.在Servlet Path部分我们还可以使用更精确的匹配，例如：
+
+<url-pattern>/index/login</url-pattern>匹配http://localhost:8080/we/index/login
+
+<url-pattern>/index/logout</url-pattern>匹配http://localhost:8080/we/index/logout
+
+此时/index/login和/index/logout才是我们的Servlet Path
+
+ 4.我们可以通过使用<url-pattern>*.do</url-pattern>来过滤请求，
+
+这样如果我们在页面中的请求中添加后缀名.do就可以避免对静态资源的过滤了，也就不需要对静态资源做特殊处理了
+
+ 
+
+注:<url-pattern>/</url-pattern>和<url-pattern>/*</url-pattern>效果是一样的
+
