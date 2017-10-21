@@ -1,0 +1,30 @@
+servlet
+
+1、输出流有两个：
+　　字节形式输出：ServletOutputStream out = response.getOutputStream(); //写二进制数据到浏览器
+　　字符形式输出：PrintWriter out =response.getWriter(); //写字符串（实际上是html内容）到浏览器
+　　
+2、输入流有两个：
+　　字节形式输入：request.getInputStream();
+　　字符形式输入：request.getReader();
+　　
+jsp
+在jsp里，有9个隐含对象，其中有一个是out对象（JspWriter）。
+
+
+
+1、输出流
+　　jsp中的out对象为response.getOutputStream()的返回值，所以在jsp中不能再调用response.getOutputStream()方法，否则就会出现重复调用的错误，因为不能同时建立两个同样的字节输出流。
+　　jsp中可以使用response.getWriter()方法建立字符输出流来输出字符数据到网页上。
+　　
+2、输入流
+　　jsp中好像没有自动实现输入流的对象，所以可以使用request.getInputStream()，request.getReader()方法建立输入流。
+　　
+3、读写服务器上的文件
+　　file.Reader()和file.Writer()方法可以用来读写服务器上任何位置的文件。
+　　application(ServletContext).getResourceAsStream()方法可以读取servlet上下文中的文件。
+
+
+
+JspWriter和PrintWriter的区别
+jsp里的JspWriter与servlet里的PrintWriter基本上没有什么区别。二者都是写数据到浏览器，都是继承Writer类，这是相同点
